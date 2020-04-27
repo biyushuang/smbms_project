@@ -168,6 +168,8 @@ $(function(){
 			validateTip(userRole.next(),{"color":"red"},imgNo + " 请重新选择用户角色",false);
 		}
 	});
+
+
 	
 	addBtn.bind("click",function(){
 		/*if(userCode.attr("validateStatus") != "true"){
