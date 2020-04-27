@@ -158,39 +158,41 @@ public class billMVC {
 			SmbmsBill bill1 = bBiz.selectBybillCode(bill.getBillcode());
 			long m2 = 2;
 			SmbmsProvider pro = pBiz.selectByPrimaryKey(bill1.getProviderid());
-			if(bill1.getModifyby() != m2){
-				BigDecimal add_price = bill1.getTotalprice();
-				BigDecimal before_price =new BigDecimal(pro.getProfax());
-				BigDecimal now_price = add_price.add(before_price);
-				// 0-2000，普通会员，打0.98折
-				BigDecimal price1 = new BigDecimal(2000);
-				// 2000-5000，vip会员，打0.95折
-				// 5000，vvip会员，打0.9折
-				BigDecimal price3 = new BigDecimal(5000);
-				if(now_price.compareTo(price1)<1){
-					pro.setProdesc("普通会员");
-				}else if(now_price.compareTo(price3)>-1){
-					pro.setProdesc("vvip会员");
-				}else{
-					pro.setProdesc("vip会员");
+			if(!bill1.getTotalprice().equals(bill.getTotalprice())){
+				if(bill1.getModifyby() != m2){
+					BigDecimal add_price = bill1.getTotalprice();
+					BigDecimal before_price =new BigDecimal(pro.getProfax());
+					BigDecimal now_price = add_price.add(before_price);
+					// 0-2000，普通会员，打0.98折
+					BigDecimal price1 = new BigDecimal(2000);
+					// 2000-5000，vip会员，打0.95折
+					// 5000，vvip会员，打0.9折
+					BigDecimal price3 = new BigDecimal(5000);
+					if(now_price.compareTo(price1)<1){
+						pro.setProdesc("普通会员");
+					}else if(now_price.compareTo(price3)>-1){
+						pro.setProdesc("vvip会员");
+					}else{
+						pro.setProdesc("vip会员");
+					}
+					pro.setProfax(now_price.toString());
+					int flag_p = pBiz.updateByPrimaryKeySelective(pro);
+					if(flag_p>0){
+						bill.setModifyby(m2);
+					}
 				}
-				pro.setProfax(now_price.toString());
-				int flag_p = pBiz.updateByPrimaryKeySelective(pro);
-				if(flag_p>0){
-					bill.setModifyby(m2);
+				BigDecimal t_price = bill1.getTotalprice();
+				String p_desc = pro.getProdesc();
+				BigDecimal rebate1 = new BigDecimal(0.98);
+				BigDecimal rebate2 = new BigDecimal(0.95);
+				BigDecimal rebate3 = new BigDecimal(0.90);
+				if(p_desc.equals("普通会员")){
+					bill.setTotalprice(t_price.multiply(rebate1));
+				}else if(p_desc.equals("vip会员")){
+					bill.setTotalprice(t_price.multiply(rebate2));
+				}else if(p_desc.equals("vvip会员")){
+					bill.setTotalprice(t_price.multiply(rebate3));
 				}
-			}
-			BigDecimal t_price = bill1.getTotalprice();
-			String p_desc = pro.getProdesc();
-			BigDecimal rebate1 = new BigDecimal(0.98);
-			BigDecimal rebate2 = new BigDecimal(0.95);
-			BigDecimal rebate3 = new BigDecimal(0.90);
-			if(p_desc.equals("普通会员")){
-				bill.setTotalprice(t_price.multiply(rebate1));
-			}else if(p_desc.equals("vip会员")){
-				bill.setTotalprice(t_price.multiply(rebate2));
-			}else if(p_desc.equals("vvip会员")){
-				bill.setTotalprice(t_price.multiply(rebate3));
 			}
 			int flag=bBiz.updateByExampleSelective(bill, example);
 			System.out.print(flag);
