@@ -158,7 +158,8 @@ public class billMVC {
 			SmbmsBill bill1 = bBiz.selectBybillCode(bill.getBillcode());
 			long m2 = 2;
 			SmbmsProvider pro = pBiz.selectByPrimaryKey(bill1.getProviderid());
-			if(!bill1.getTotalprice().equals(bill.getTotalprice())){
+			System.out.println(pro);
+			if(!bill1.getTotalprice().equals(bill.getTotalprice()) || !bill1.getIspayment().equals(bill.getIspayment())){
 				if(bill1.getModifyby() != m2){
 					BigDecimal add_price = bill1.getTotalprice();
 					BigDecimal before_price =new BigDecimal(pro.getProfax());
