@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <display-name>SMBMS</display-name>
+  <!-- 过滤器 -->
+    <filter>
+  	<filter-name>VoteFilter</filter-name>
+  	<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+  	<init-param>
+  		<param-name>encoding</param-name>
+  		<param-value>UTF-8</param-value>
+  	</init-param>
+  	<init-param>
+  	<param-name>forceEncoding</param-name>
+  	<param-value>true</param-value>
+  	</init-param>
+  </filter>
+  <filter-mapping>
+  	<filter-name>VoteFilter</filter-name>
+  	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+  <!-- 配置监听器读取spring配置文件的路径，默认在web-info文件下 -->
+  <context-param>
+  	<param-name>contextConfigLocation</param-name>
+  	<param-value>classpath:applicationContext.xml</param-value>
+  </context-param>
+  <!-- 启动web容器时启用applicationContext.xml -->
+   <listener>
+  	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener> 
+  
+  <!-- 配置springMVC前端控制器:默认查找web-info/[servlet-name]-servlet.xml -->
+  <servlet>
+    	<servlet-name>springMVC</servlet-name>
+    	<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    	<init-param>
+        	<param-name>contextConfigLocation</param-name>
+        	<param-value>WEB-INF/mvc.xml</param-value>
+        	<!-- <param-value>classpath:mvc.xml</param-value> -->
+    	</init-param>
+    	<load-on-startup>1</load-on-startup><!-- 服务启动时启动servlet -->
+	</servlet>
+ 	<servlet-mapping>  
+    	<servlet-name>springMVC</servlet-name>  
+    	<url-pattern>/</url-pattern>  
+	</servlet-mapping>
+
+	
+  <welcome-file-list>
+    <welcome-file>login.html</welcome-file>
+    <welcome-file>login.htm</welcome-file>
+    <welcome-file>login.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>

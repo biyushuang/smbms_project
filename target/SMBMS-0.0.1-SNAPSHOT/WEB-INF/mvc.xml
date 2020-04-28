@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-2.5.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+	http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+	
+	<!-- 映射处理器:通过何种找到对应的业务处理器 -->
+	<!-- <bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>-->
+	
+	<!-- name对应请求url -->
+	<!-- <bean name="/hello.do" class="com.jcz.contar.TestMVC"></bean>  -->
+	
+	<!-- 处理适配器 ：什么样的类是业务处理器 -->
+	<!-- <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/> -->
+		
+	<!-- 扫描指定包，指明这里使用注解 -->
+	<context:component-scan base-package="com.jcz.*"/>
+	<!-- 引用注解驱动，作用相当于上面两个bean -->
+	<mvc:annotation-driven>
+		<!-- 解决JSON中文乱码问题，一次配置永久解决 -->
+		<mvc:message-converters>
+    		<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+    			<property name="supportedMediaTypes">
+    				<list>
+    					<value>application/json;charset=UTF-8</value>
+    				</list>
+    			</property>
+    		</bean>
+    	</mvc:message-converters>
+	</mvc:annotation-driven>
+	<!-- 解决JSON时间显示问题，一次配置永久解决 -->
+	<!-- <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+    		<property name="supportedMediaTypes">
+    			<list>
+    				<value>text/html;charset=UTF-8</value>
+    				<value>application/json</value>
+    			</list>
+    		</property>
+    		<property name="features">
+    			<list>
+    				Date的日期转换器
+    				<value>WriteDateUseDateFormat</value>
+    			</list>
+    		</property>
+    </bean> -->
+	
+	<!-- 静态资源访问 -->
+	<mvc:resources mapping="/statics/**" location="/statics/" />
+	
+	<!-- 视图解析器 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">  
+    	<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>  
+    	<property name="prefix" value="/WEB-INF/jsp/"/>  
+    	<property name="suffix" value=".jsp"/>  
+	</bean>		
+	
+	<!--上传文件解析器  -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    	<property name="maxUploadSize" value="5000000"/>
+    	<property name="defaultEncoding" value="UTF-8"/>
+	</bean>
+	
+	<!--配置拦截器,使用户只能通过登录来访问我们的系统-->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<!--拦截多级目录-->
+			<mvc:mapping path="/*/**"/>
+			<mvc:exclude-mapping path="/login.htm"/>
+			<mvc:exclude-mapping path="/login.do"/>
+			<bean class="com.jcz.springMVC.LoginInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+	
+</beans>

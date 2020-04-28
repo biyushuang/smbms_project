@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-2.5.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+	http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	 <!-- 扫描包中注解标注的类 -->	
+	<context:component-scan base-package="com.jcz.*" />
+	
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		destroy-method="close">
+		<!-- 数据库基本信息配置 -->
+		<property name="url" value="jdbc:mysql://localhost:3306/smbms?useUnicode=true&amp;characterEncoding=UTF8" />
+		<property name="username" value="root" />
+		<property name="password" value="biyushuang" />
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+
+		<!-- 最大并发连接数 -->
+		<!-- <property name="maxActive" value="${maxActive}" /> 初始化连接数量 <property 
+			name="initialSize" value="${initialSize}" /> 配置获取连接等待超时的时间 <property name="maxWait" 
+			value="${maxWait}" /> 最小空闲连接数 <property name="minIdle" value="${minIdle}" 
+			/> -->
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+	</bean>
+	
+	<!-- 会话工厂 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	    <property name="dataSource" ref="dataSource"></property>
+	    <!-- 实体设置短名 -->
+	    <property name="typeAliasesPackage" value="com.jcz.entity"></property>
+	    <property name="mapperLocations" value="classpath:com/jcz/mapper/*Mapper.xml"></property>
+	</bean>
+	
+	<!-- 为所有dao定义bean， 映射接口扫描器-->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+	    <property name="basePackage" value="com.jcz.dao"></property>
+	</bean>
+</beans>
